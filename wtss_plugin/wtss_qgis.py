@@ -49,6 +49,9 @@ from .controller.wtss_qgis_controller import Controls, WTSS_Controls
 from .helpers.files_export_helper import FilesExport
 # Import the STAC args
 from .helpers.pystac_helper import stac_args
+# Import the smoothing filters helper
+from .helpers.smoothing_helper import (Gam, MovingAverage, SGolay,
+                                       SmoothingFilter, Whittaker, options)
 # Initialize Qt resources from file resources.py
 from .resources import *
 # Import the code for the dialog
@@ -287,6 +290,7 @@ class WTSSQgis:
         self.dlg.input_longitude.valueChanged.connect(self.checkFilters)
         self.dlg.input_latitude.valueChanged.connect(self.checkFilters)
         self.listCoverages()
+        self.initSmoothingOptions()
         self.getAvailableGeometries()
         self.changeGeometryType(0)
 
@@ -385,6 +389,41 @@ class WTSSQgis:
         self.dlg.green_input.activated.connect(self.loadRGBOptions)
         self.dlg.blue_input.setEnabled(False)
         self.dlg.blue_input.activated.connect(self.loadRGBOptions)
+
+    def initSmoothingOptions(self):
+        """Load smoothing options."""
+        self.options = { "No Smoothing": None }
+        self.options.update(options)
+        self.selected_smoothing = None
+        self.dlg.smoothing_filters_selection.clear()
+        self.dlg.smoothing_filters_selection.addItems(list(self.options.keys()))
+        self.dlg.smoothing_filters_selection.setCurrentIndex(0)
+        self.dlg.smoothing_filters_selection.activated.connect(self.selectSmoothingFilter)
+        self.selectSmoothingFilter()
+
+    def selectSmoothingFilter(self):
+        """Select smoothing filters."""
+        smoothing_options = list(self.options.keys())
+        selected_smoothing_index = smoothing_options.index(str(self.dlg.smoothing_filters_selection.currentText()))
+        # Link the selected option to tab
+        for opt in range(0, len(smoothing_options)):
+            tab_index = opt + 1
+            self.dlg.smoothing_options_tab.setTabEnabled(tab_index, ((selected_smoothing_index == opt) and (opt != 0)))
+            self.dlg.smoothing_options_tab.setTabVisible(tab_index, (selected_smoothing_index == opt))
+        self.changeSmoothingFilterTab(selected_smoothing_index + 1)
+
+    def changeSmoothingFilterTab(self, index):
+        """When smoothing filter selection tab changed."""
+        if index == 0:
+            self.selected_smoothing = None
+        elif index == 2:
+            self.selected_smoothing = SGolay
+        elif index == 3:
+            self.selected_smoothing = Whittaker
+        elif index == 4:
+            self.selected_smoothing = MovingAverage
+        elif index == 5:
+            self.selected_smoothing = Gam
 
     def setCRS(self):
         """Set the CRS in project instance."""
