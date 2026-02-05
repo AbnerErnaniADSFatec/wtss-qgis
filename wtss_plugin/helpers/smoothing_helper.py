@@ -148,7 +148,7 @@ class SmoothingFilter:
 
     def select(self, selection):
         instance_ = 0
-        for option in self.options.keys():
+        for option in list(self.options.keys()):
             if isinstance(selection, self.options[option]):
                 self.selected_option = selection
                 instance_ += 1
@@ -163,9 +163,9 @@ class SmoothingFilter:
         all_ = list(self.dataset.keys())
         return all_[(all_.index(time_key) + 1):len(all_)]
 
-    def plot(self, select_band: str = None, original: bool = True):
+    def plot(self, title: str, select_band: str = None, original: bool = True):
         fig = plt.figure(figsize = (12, 5))
-        fig.suptitle(f"Time Series for S2-16D-2")
+        fig.suptitle(title)
         seaborn.set_theme(style="darkgrid")
         bands_ = self.getBands()
         if select_band:

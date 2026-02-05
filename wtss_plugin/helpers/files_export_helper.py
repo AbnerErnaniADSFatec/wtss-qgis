@@ -30,6 +30,7 @@ import seaborn
 from PyQt5.QtWidgets import QMessageBox
 
 from ..helpers.pystac_helper import get_source_from_click
+from ..helpers.smoothing_helper import SmoothingFilter
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 
@@ -283,7 +284,7 @@ class FilesExport:
         except Exception as e:
             self.alert("error", "Error while generate the image!", str(e))
 
-    def generatePlotFig(self, time_series, select_coverage, bands_description):
+    def generatePlotFig(self, time_series, select_coverage, bands_description, smoothing = None):
         """Generate an image .JPEG with time series data in a line chart."""
         try:
             self.apply_ts.bands_description = bands_description
@@ -318,25 +319,37 @@ class FilesExport:
                 time_series_df = self.files_format.format_time_series_df(time_series)
                 time_series_df = self.files_format.get_values_time_series_df(time_series_df)
                 time_series_df = self.apply_ts.interpolate_df(time_series_df)
-                fig = plt.figure(figsize = (12, 5))
-                fig.suptitle(("Time Series for {name}").format(name = select_coverage))
-                seaborn.set_theme(style="darkgrid")
-                for band in self.apply_ts.get_bands_from_df(time_series_df):
-                    seaborn.lineplot(
-                        data = time_series_df,
-                        x = "Index", y = band, label = band,
-                        markersize = 8, marker = 'o',
-                        linestyle = '-', picker = 10
+                bands_to_plot = self.apply_ts.get_bands_from_df(time_series_df)
+                if smoothing:
+                    smoothingFilter = SmoothingFilter(time_series_df)
+                    smoothingFilter.select(smoothing)
+                    smoothingFilter.apply(bands_to_plot)
+                    for band in bands_to_plot:
+                        smoothingFilter.plot(
+                            title=("Time Series for {name}\n{smooth}") \
+                                .format(name = select_coverage, smooth = smoothing.title),
+                            select_band=band
+                        )
+                else:
+                    fig = plt.figure(figsize = (12, 5))
+                    fig.suptitle(("Time Series for {name}").format(name = select_coverage))
+                    seaborn.set_theme(style="darkgrid")
+                    for band in self.apply_ts.get_bands_from_df(time_series_df):
+                        seaborn.lineplot(
+                            data = time_series_df,
+                            x = "Index", y = band, label = band,
+                            markersize = 8, marker = 'o',
+                            linestyle = '-', picker = 10
+                        )
+                    fig.canvas.mpl_connect('pick_event', get_source_from_click)
+                    fig.autofmt_xdate()
+                    plt.xlabel(None)
+                    plt.ylabel(None)
+                    plt.legend(
+                        bbox_to_anchor=(1.01, 1),
+                        loc='upper left',
+                        borderaxespad=0
                     )
-                fig.canvas.mpl_connect('pick_event', get_source_from_click)
-                fig.autofmt_xdate()
-                plt.xlabel(None)
-                plt.ylabel(None)
-                plt.legend(
-                    bbox_to_anchor=(1.01, 1),
-                    loc='upper left',
-                    borderaxespad=0
-                )
-                plt.show()
+                    plt.show()
         except Exception as e:
             self.alert("error", "Error while generate the image!", str(e))

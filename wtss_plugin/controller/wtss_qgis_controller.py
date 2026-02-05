@@ -86,6 +86,10 @@ class Controls:
             description=str(description_dict.get('description')),
         )
 
+    def is_typed(self, obj, type):
+        """Check if obj belongs to a type."""
+        return isinstance(obj, type) or (obj == type)
+
 class WTSS_Controls:
     """Class for the service storage rule.
 

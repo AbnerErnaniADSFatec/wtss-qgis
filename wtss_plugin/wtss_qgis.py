@@ -49,9 +49,9 @@ from .controller.wtss_qgis_controller import Controls, WTSS_Controls
 from .helpers.files_export_helper import FilesExport
 # Import the STAC args
 from .helpers.pystac_helper import stac_args
-# Import the smoothing filters helper
-from .helpers.smoothing_helper import (Gam, MovingAverage, SGolay,
-                                       SmoothingFilter, Whittaker, options)
+# Import the smoothing filters
+from .helpers.smoothing_helper import (Gam, MovingAverage, SGolay, Whittaker,
+                                       options)
 # Initialize Qt resources from file resources.py
 from .resources import *
 # Import the code for the dialog
@@ -418,12 +418,23 @@ class WTSSQgis:
             self.selected_smoothing = None
         elif index == 2:
             self.selected_smoothing = SGolay
+            self.dlg.sgolay_window_size.setValue(19)
+            self.dlg.sgolay_polyorder.setValue(3)
         elif index == 3:
             self.selected_smoothing = Whittaker
+            self.dlg.whittaker_lambda.setValue(10)
         elif index == 4:
             self.selected_smoothing = MovingAverage
+            self.dlg.cma_window.setValue(5)
+            self.dlg.cma_min_periods.setValue(1)
+            self.dlg.cma_center.setChecked(True)
+            print(self.dlg.cma_center.isChecked())
         elif index == 5:
             self.selected_smoothing = Gam
+            self.dlg.gam_n_splines.setValue(10)
+            self.dlg.gam_splines_order.setValue(2)
+            self.dlg.gam_feature.setValue(0)
+            print(self.dlg.gam_splines_order.value())
 
     def setCRS(self):
         """Set the CRS in project instance."""
@@ -526,7 +537,7 @@ class WTSSQgis:
         self.dlg.bands_scroll.setWidget(self.widget)
         # Update dates for start and end to coverage selection
         self.dlg.start_date.setDate(self.basic_controls.formatForQDate(timeline[0]))
-        self.dlg.end_date.setDate(self.basic_controls.formatForQDate(timeline[len(timeline) - 1]))
+        self.dlg.end_date.setDate(self.basic_controls.formatForQDate(timeline[len(timeline) - 1]).addDays(-1))
         self.checkFilters()
 
     def loadSelectedBands(self):
@@ -541,6 +552,30 @@ class WTSSQgis:
         """Verify the selected attributes in check list and save in array."""
         selected_attributes = [str(band) for band in self.loadSelectedBands().keys()]
         return selected_attributes
+
+    def loadSmoothingFiltersAtributtes(self):
+        """When smoothing filter selection tab changed."""
+        if self.basic_controls.is_typed(self.selected_smoothing, SGolay):
+            self.selected_smoothing = SGolay(
+                window_size=int(self.dlg.sgolay_window_size.value()),
+                polynomial_order=int(self.dlg.sgolay_polyorder.value())
+            )
+        elif self.basic_controls.is_typed(self.selected_smoothing, Whittaker):
+            self.selected_smoothing = Whittaker(
+                lambda_=int(self.dlg.whittaker_lambda.value())
+            )
+        elif self.basic_controls.is_typed(self.selected_smoothing, MovingAverage):
+            self.selected_smoothing = MovingAverage(
+                window=int(self.dlg.cma_window.value()),
+                min_periods=int(self.dlg.cma_min_periods.value()),
+                center=bool(self.dlg.cma_center.isChecked())
+            )
+        elif self.basic_controls.is_typed(self.selected_smoothing, Gam):
+            self.selected_smoothing = Gam(
+                n_splines=int(self.dlg.gam_n_splines.value()),
+                spline_order=int(self.dlg.gam_splines_order.value()),
+                feature=int(self.dlg.gam_feature.value())
+            )
 
     def changeGeometryType(self, index):
         """When geometry selection tab changed."""
@@ -727,10 +762,12 @@ class WTSSQgis:
         time_series = self.loadTimeSeries()
         if time_series.total_locations() > 0:
             self.loadSTACArgs(time_series)
+            self.loadSmoothingFiltersAtributtes()
             self.files_controls.generatePlotFig(
                 time_series,
                 select_coverage = str(self.dlg.coverage_selection.currentText()),
-                bands_description = self.loadSelectedBands()
+                bands_description = self.loadSelectedBands(),
+                smoothing=self.selected_smoothing
             )
         else:
             self.basic_controls.alert("error", "AttributeError", "The times series service returns empty, no data to show!")
