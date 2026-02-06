@@ -414,7 +414,7 @@ class WTSSQgis:
 
     def changeSmoothingFilterTab(self, index):
         """When smoothing filter selection tab changed."""
-        if index == 0:
+        if index == 1:
             self.selected_smoothing = None
         elif index == 2:
             self.selected_smoothing = SGolay

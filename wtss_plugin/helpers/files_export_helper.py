@@ -293,28 +293,39 @@ class FilesExport:
                 summarize = time_series.summarize()
                 for band_ in time_series.query.attributes:
                     summarize_formatted = self.files_format.format_summarize_ts(summarize, band_)
-                    fig = plt.figure(figsize = (12, 5))
-                    fig.suptitle(("Coverage {name} Aggregations for {band}").format(
+                    plot_title = ("Coverage {name} Aggregations for {band}").format(
                         name=select_coverage, band=band_
-                    ))
-                    seaborn.set_theme(style="darkgrid")
-                    for aggregation in selected_aggregations:
-                        seaborn.lineplot(
-                            data = summarize_formatted,
-                            x = "Index", y = aggregation, label = aggregation,
-                            markersize = 8, marker = 'o',
-                            linestyle = '-', picker = 10
-                        )
-                    fig.canvas.mpl_connect('pick_event', get_source_from_click)
-                    fig.autofmt_xdate()
-                    plt.xlabel(None)
-                    plt.ylabel(None)
-                    plt.legend(
-                        bbox_to_anchor=(1.01, 1),
-                        loc='upper left',
-                        borderaxespad=0
                     )
-                    plt.show()
+                    if smoothing:
+                        smoothingFilter = SmoothingFilter(summarize_formatted)
+                        smoothingFilter.select(smoothing)
+                        smoothingFilter.apply(selected_aggregations)
+                        for aggregation in selected_aggregations:
+                            smoothingFilter.plot(
+                                title=plot_title,
+                                select_band=aggregation
+                            )
+                    else:
+                        fig = plt.figure(figsize = (12, 5))
+                        fig.suptitle()
+                        seaborn.set_theme(style="darkgrid")
+                        for aggregation in selected_aggregations:
+                            seaborn.lineplot(
+                                data = summarize_formatted,
+                                x = "Index", y = aggregation, label = aggregation,
+                                markersize = 8, marker = 'o',
+                                linestyle = '-', picker = 10
+                            )
+                        fig.canvas.mpl_connect('pick_event', get_source_from_click)
+                        fig.autofmt_xdate()
+                        plt.xlabel(None)
+                        plt.ylabel(None)
+                        plt.legend(
+                            bbox_to_anchor=(1.01, 1),
+                            loc='upper left',
+                            borderaxespad=0
+                        )
+                        plt.show()
             else:
                 time_series_df = self.files_format.format_time_series_df(time_series)
                 time_series_df = self.files_format.get_values_time_series_df(time_series_df)
