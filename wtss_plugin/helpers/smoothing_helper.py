@@ -33,7 +33,7 @@ class SGolay:
     """Savitz Golay Smothing."""
 
     def __init__(self, window_size: int, polynomial_order: int, mode: str = "interp"):
-        self.title = "Savitz Golay"
+        self.title = "Savitzky Golay"
         self.key = "sgolay"
         self.mode = mode
         if (window_size % 2) != 0:
@@ -132,7 +132,7 @@ class Gam:
         return filtered_dataset
 
 options = {
-    "Savitz Golay": SGolay,
+    "Savitzky Golay": SGolay,
     "Whittaker–Eilers": Whittaker,
     "Centered Moving Average": MovingAverage,
     "Generalized Additive Model (GAM)": Gam

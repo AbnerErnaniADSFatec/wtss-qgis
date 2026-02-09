@@ -414,8 +414,10 @@ class WTSSQgis:
 
     def changeSmoothingFilterTab(self, index):
         """When smoothing filter selection tab changed."""
+        self.dlg.plot_original_data.setEnabled(True)
         if index == 1:
             self.selected_smoothing = None
+            self.dlg.plot_original_data.setEnabled(False)
         elif index == 2:
             self.selected_smoothing = SGolay
             self.dlg.sgolay_window_size.setValue(19)
@@ -697,7 +699,12 @@ class WTSSQgis:
             if name[0] != '':
                 time_series = self.loadTimeSeries()
                 if time_series.total_locations() > 0:
-                    self.files_controls.generateCSV(name[0], time_series, bands_description = self.loadSelectedBands())
+                    self.loadSmoothingFiltersAtributtes()
+                    self.files_controls.generateCSV(
+                        name[0], time_series,
+                        bands_description = self.loadSelectedBands(),
+                        smoothing = self.selected_smoothing
+                    )
                 else:
                     self.basic_controls.alert("warning", "Warning", "The times series service returns empty, no data to show!")
         except AttributeError as error:
@@ -717,8 +724,12 @@ class WTSSQgis:
             )
             if name[0] != '':
                 time_series = self.loadTimeSeries()
+                self.loadSmoothingFiltersAtributtes()
                 if time_series.total_locations() > 0:
-                    self.files_controls.generateJSON(name[0], time_series)
+                    self.files_controls.generateJSON(
+                        name[0], time_series,
+                        smoothing = self.selected_smoothing
+                    )
                 else:
                     self.basic_controls.alert("warning", "Warning", "The times series service returns empty, no data to show!")
         except AttributeError as error:
@@ -767,7 +778,8 @@ class WTSSQgis:
                 time_series,
                 select_coverage = str(self.dlg.coverage_selection.currentText()),
                 bands_description = self.loadSelectedBands(),
-                smoothing=self.selected_smoothing
+                smoothing=self.selected_smoothing,
+                plot_original=self.dlg.plot_original_data.isChecked()
             )
         else:
             self.basic_controls.alert("error", "AttributeError", "The times series service returns empty, no data to show!")

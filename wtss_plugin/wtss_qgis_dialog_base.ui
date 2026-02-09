@@ -467,9 +467,25 @@
         <rect>
          <x>10</x>
          <y>10</y>
-         <width>431</width>
+         <width>311</width>
          <height>27</height>
         </rect>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="plot_original_data">
+       <property name="geometry">
+        <rect>
+         <x>330</x>
+         <y>10</y>
+         <width>111</width>
+         <height>25</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Original data</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
        </property>
       </widget>
      </widget>
@@ -480,7 +496,7 @@
      </widget>
      <widget class="QWidget" name="sgolay_options_tab">
       <attribute name="title">
-       <string>Savitz Golay Options</string>
+       <string>Savitzky Golay Options</string>
       </attribute>
       <widget class="QSpinBox" name="sgolay_window_size">
        <property name="geometry">

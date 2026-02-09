@@ -109,8 +109,6 @@ class STAC_ARGS:
 
     def build_gdal_vrt_raster(self, output_file: str, files: List[str], **options) -> Optional[str]:
         opts = deepcopy(options)
-        opts.setdefault("resampleAlg", "nearest")
-        opts.setdefault("separate", True)
         vrt_options = gdal.BuildVRTOptions(**opts)
         try:
             gdal.BuildVRT(output_file, files, options = vrt_options)
