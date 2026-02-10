@@ -157,7 +157,7 @@ class FilesFormat:
         """Format Time series column to JSON."""
         time_series_ = {}
         for key in time_series.keys():
-            if (key != 'Index') or typed:
+            if (key != 'Index') or not typed:
                 time_series_[key] = list(time_series[key])
             else:
                 time_series_[key] = [date.strftime('%Y-%m-%d') for date in time_series[key]]
@@ -285,7 +285,7 @@ class FilesExport:
             if self.checkResult(time_series):
                 time_series_df = self.files_format.format_time_series_df(time_series, typed)
                 if smoothing:
-                    for row in time_series_df.itertuples():
+                    for row in range(len(time_series_df)):
                         time_series_data_row = self.files_format.get_values_time_series_df(time_series_df, row)
                         time_series_data_row = self.apply_ts.interpolate_df(time_series_data_row)
                         smoothingFilter = SmoothingFilter(time_series_data_row)
@@ -337,7 +337,7 @@ class FilesExport:
                             )
                     else:
                         fig = plt.figure(figsize = (12, 5))
-                        fig.suptitle()
+                        fig.suptitle(plot_title)
                         seaborn.set_theme(style="darkgrid")
                         for aggregation in selected_aggregations:
                             seaborn.lineplot(
