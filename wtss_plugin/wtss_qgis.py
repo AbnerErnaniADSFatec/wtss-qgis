@@ -228,6 +228,7 @@ class WTSSQgis:
         canvas = self.iface.mapCanvas()
         canvas_crs = canvas.mapSettings().destinationCrs()
         canvas_extent = canvas.extent()
+        invalid_types = ["CURVEPOLYGON", "MULTISURFACE", "POLYHEDRALSURFACE"]
         self.available_geometries = {}
         for layer in instance_layers:
             if not isinstance(layer, QgsVectorLayer):
@@ -243,32 +244,52 @@ class WTSSQgis:
             except:
                 continue
             request = QgsFeatureRequest().setFilterRect(layer_extent_in_layer_crs)
-            if layer.geometryType() == QgsWkbTypes.GeometryType.Polygon:
+            if layer.geometryType() == QgsWkbTypes.GeometryType.Polygon \
+                and QgsWkbTypes.displayString(layer.wkbType()).upper() not in invalid_types:
                 available_items = []
                 for feature in layer.getFeatures(request):
                     geometry = feature.geometry()
                     if geometry is not None and not geometry.isEmpty():
-                        polygon = loads(geometry.asWkt())
-                        if isinstance(polygon, MultiPolygon):
-                            polygon = polygon.geoms[0]
-                        available_items.append({
-                            'geometry': polygon,
-                            'crs': str(layer.crs().toWkt()),
-                            'attributes': dict(zip(layer.fields().names(), feature.attributes()))
-                        })
+                        try:
+                            polygon = loads(geometry.asWkt())
+                            if isinstance(polygon, MultiPolygon):
+                                polygon = polygon.geoms[0]
+                            available_items.append({
+                                'geometry': polygon,
+                                'crs': str(layer.crs().toWkt()),
+                                'attributes': dict(zip(layer.fields().names(), feature.attributes()))
+                            })
+                        except:
+                            continue
                 if len(available_items) > 0:
                     self.available_geometries[layer.name()] = available_items
-            elif layer.geometryType() == QgsWkbTypes.GeometryType.Point and layer.name() != Config.TEMPORARY_LAYER_NAME:
+            elif layer.geometryType() == QgsWkbTypes.GeometryType.Point \
+                and layer.name() != Config.TEMPORARY_LAYER_NAME:
                 try:
                     geometry = self.buildMultiPoint(layer.getFeatures(request))
                     if not geometry.is_empty:
-                        self.available_geometries[layer.name()] = [{
+                        self.available_geometries[f"{layer.name()} - All points"] = [{
                             'geometry': geometry,
                             'crs': str(layer.crs().toWkt()),
                             'attributes': {'type': 'MultiPoint Geometry'}
                         }]
+                        available_points = []
+                        for feature in layer.getFeatures(request):
+                            geometry = feature.geometry()
+                            try:
+                                point = loads(geometry.asWkt())
+                                if isinstance(point, MultiPoint):
+                                    point = point.geoms[0]
+                                available_points.append({
+                                    'geometry': point,
+                                    'crs': str(layer.crs().toWkt()),
+                                    'attributes': dict(zip(layer.fields().names(), feature.attributes()))
+                                })
+                            except:
+                                continue
+                        self.available_geometries[layer.name()] = available_points
                 except:
-                    pass
+                    continue
         self.dlg.available_layers.clear()
         available_layers_ = list(self.available_geometries.keys())
         self.dlg.available_layers.addItems(available_layers_)
@@ -430,13 +451,11 @@ class WTSSQgis:
             self.dlg.cma_window.setValue(5)
             self.dlg.cma_min_periods.setValue(1)
             self.dlg.cma_center.setChecked(True)
-            print(self.dlg.cma_center.isChecked())
         elif index == 5:
             self.selected_smoothing = Gam
             self.dlg.gam_n_splines.setValue(10)
             self.dlg.gam_splines_order.setValue(2)
             self.dlg.gam_feature.setValue(0)
-            print(self.dlg.gam_splines_order.value())
 
     def setCRS(self):
         """Set the CRS in project instance."""

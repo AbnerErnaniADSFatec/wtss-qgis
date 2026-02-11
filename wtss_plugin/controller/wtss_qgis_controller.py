@@ -18,6 +18,7 @@
 
 """Python QGIS Plugin for WTSS."""
 
+import requests
 from PyQt5.QtCore import QDate
 from PyQt5.QtWidgets import QInputDialog, QLineEdit, QMessageBox
 from wtss import WTSS
@@ -121,7 +122,10 @@ class WTSS_Controls:
         """Return a dictionary with the list of available products."""
         coverages_dict = {}
         for coverage in self.wtss.coverages:
-            coverages_dict[dict(self.wtss[coverage])['title']] = coverage
+            try:
+                coverages_dict[dict(self.wtss[coverage])['title']] = coverage
+            except requests.exceptions.HTTPError:
+                continue
         return coverages_dict
 
     def productDescription(self, product):

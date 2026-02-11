@@ -244,10 +244,8 @@ class FilesExport:
         }
         """
         try:
-            bands_string = "("
-            for band in attributes.get("selected_bands"):
-                bands_string = bands_string + "'" + str(band) + "', "
-            bands_string = bands_string[:len(bands_string)-2] + ")"
+            bands_string = (',').join([f"'{str(band)}'" for band in attributes.get("selected_bands")])
+            bands_string = f"[{bands_string}]"
             attributes["selected_bands"] = bands_string
             code_to_save = self.files_format.defaultCode().format(**attributes)
             file = open(file_name, "w")
