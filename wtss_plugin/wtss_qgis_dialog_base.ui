@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>732</width>
-    <height>591</height>
+    <width>731</width>
+    <height>590</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -571,7 +571,7 @@
      </widget>
      <widget class="QWidget" name="whittaker_options_tab">
       <attribute name="title">
-       <string>Whittaker Options</string>
+       <string>Whittaker–Eilers Options</string>
       </attribute>
       <widget class="QLabel" name="label_whittaker_lambda">
        <property name="geometry">
@@ -620,7 +620,7 @@
      </widget>
      <widget class="QWidget" name="cma_options_tab">
       <attribute name="title">
-       <string>Moving Average Options</string>
+       <string>Centered Moving Average Options</string>
       </attribute>
       <widget class="QSpinBox" name="cma_window">
        <property name="geometry">
