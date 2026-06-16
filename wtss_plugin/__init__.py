@@ -18,9 +18,9 @@
 
 """Python QGIS Plugin for WTSS."""
 
-from .config import InstallDependencies
+from .config import Config
 
-installDependencies = InstallDependencies(__file__)
+config = Config(__file__)
 
 def classFactory(iface):
     """Load wtss_qgis class from file wtss_qgis.
@@ -30,18 +30,8 @@ def classFactory(iface):
     """
     #
     # Setting PYTHONPATH to use dependencies
-    installDependencies.set_lib_path()
-    try:
-        #
-        # Test import of dependencies
-        from .wtss_qgis import WTSSQgis
-    except (ModuleNotFoundError, ImportError) as error:
-        #
-        # Run packages installation
-        installDependencies.run_install_pkgs_process(error_msg=error)
-        #
-        # Test imports of dependencies again
-        from .wtss_qgis import WTSSQgis
-    #
+    config.set_lib_path()
+    # Imports of dependencies again
+    from .wtss_qgis import WTSSQgis
     # Start plugin GUI
     return WTSSQgis(iface)

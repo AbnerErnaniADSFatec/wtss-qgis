@@ -61,13 +61,14 @@ install_requires = [
     'numpy!=1.24.0,<2,>=1.22',
     'matplotlib>=3.7',
     'seaborn>=0.13.2',
+    'setuptools>=75,<82',
     'pandas>=2',
     'jsonschema>=3.2',
     'pystac-client>=0.8.3',
     'wtss==2.0.0a3',
     'geopandas==1.1.1',
     'scipy<=1.17.0',
-    'pygam==0.12.0'
+    'pygam==0.12.0',
 ]
 
 packages = find_packages()
