@@ -51,7 +51,7 @@ from .helpers.files_export_helper import FilesExport
 from .helpers.pystac_helper import stac_args
 # Import the smoothing filters
 from .helpers.smoothing_helper import (Gam, MovingAverage, SGolay, Whittaker,
-                                       options)
+                                       options, aggregation_methods)
 # Initialize Qt resources from file resources.py
 from .resources import *
 # Import the code for the dialog
@@ -415,7 +415,17 @@ class WTSSQgis:
         """Load smoothing options."""
         self.options = { "No Smoothing": None }
         self.options.update(options)
+        self.map_months = { "No Time Stamps": 0 }
+        self.map_months.update(self.basic_controls.get_months())
+        self.map_aggregations = { "All methods": "all" }
+        self.map_aggregations.update(aggregation_methods)
         self.selected_smoothing = None
+        self.dlg.time_stamp_selection.clear()
+        self.dlg.time_stamp_selection.addItems(list(self.map_months.keys()))
+        self.dlg.time_stamp_selection.setCurrentIndex(0)
+        self.dlg.aggregation_selection.clear()
+        self.dlg.aggregation_selection.addItems(list(self.map_aggregations.keys()))
+        self.dlg.aggregation_selection.setCurrentIndex(0)
         self.dlg.smoothing_filters_selection.clear()
         self.dlg.smoothing_filters_selection.addItems(list(self.options.keys()))
         self.dlg.smoothing_filters_selection.setCurrentIndex(0)
@@ -427,9 +437,10 @@ class WTSSQgis:
         smoothing_options = list(self.options.keys())
         selected_smoothing_index = smoothing_options.index(str(self.dlg.smoothing_filters_selection.currentText()))
         # Link the selected option to tab
-        for opt in range(0, len(smoothing_options)):
-            tab_index = opt + 1
-            self.dlg.smoothing_options_tab.setTabEnabled(tab_index, ((selected_smoothing_index == opt) and (opt != 0)))
+        fixed_tabs = 2
+        for tab_index in range(fixed_tabs, 6):
+            opt = tab_index - (fixed_tabs - 1)
+            self.dlg.smoothing_options_tab.setTabEnabled(tab_index, (selected_smoothing_index == opt))
             self.dlg.smoothing_options_tab.setTabVisible(tab_index, (selected_smoothing_index == opt))
         self.changeSmoothingFilterTab(selected_smoothing_index + 1)
 
@@ -798,7 +809,9 @@ class WTSSQgis:
                 select_coverage = str(self.dlg.coverage_selection.currentText()),
                 bands_description = self.loadSelectedBands(),
                 smoothing=self.selected_smoothing,
-                plot_original=self.dlg.plot_original_data.isChecked()
+                plot_original=self.dlg.plot_original_data.isChecked(),
+                time_stamp=self.map_months[str(self.dlg.time_stamp_selection.currentText())],
+                aggregation=self.map_aggregations[str(self.dlg.aggregation_selection.currentText())],
             )
         else:
             self.basic_controls.alert("error", "AttributeError", "The times series service returns empty, no data to show!")

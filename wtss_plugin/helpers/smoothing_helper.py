@@ -28,7 +28,6 @@ from scipy.sparse.linalg import spsolve
 
 from ..helpers.pystac_helper import get_source_from_click
 
-
 class SGolay:
     """Savitz Golay Smothing."""
 
@@ -138,6 +137,20 @@ options = {
     "Generalized Additive Model (GAM)": Gam
 }
 
+aggregation_methods = {
+    "By Mean": "mean", "By Median": "median",
+    "By Minimum": "min", "By Maximum": "max",
+    "By Standard Deviation": "std",
+    "By Interquartile Median": "iqr"
+}
+
+months_names = [
+    "January", "February", "March",
+    "April", "May", "June",
+    "July", "August", "September",
+    "October", "November", "December"
+]
+
 class SmoothingFilter:
     """Smoothing filters helper."""
 
@@ -163,8 +176,8 @@ class SmoothingFilter:
         all_ = list(self.dataset.keys())
         return all_[(all_.index(time_key) + 1):len(all_)]
 
-    def plot(self, title: str, select_band: str = None, original: bool = True):
-        fig = plt.figure(figsize = (12, 5))
+    def plot(self, title: str, select_band: str = None, stamping_month: int = 1, original: bool = True):
+        fig, ax = plt.subplots(figsize = (12, 5))
         fig.suptitle(title)
         seaborn.set_theme(style="darkgrid")
         bands_ = self.getBands()
@@ -186,6 +199,15 @@ class SmoothingFilter:
                     linestyle = '-', picker = 10,
                     color="grey", alpha=0.5
                 )
+        if stamping_month > 0 and stamping_month <= 12:
+            timeline_dates = sorted(self.dataset["Index"])
+            years = sorted(set(dt.year for dt in timeline_dates))
+            first = True
+            for year in years:
+                dates_in_month_year = [dt for dt in timeline_dates if dt.month == stamping_month and dt.year == year]
+                if dates_in_month_year:
+                    ax.axvline(x = dates_in_month_year[0], color = 'red', linestyle = ':', label = f"{months_names[stamping_month - 1]} Time Stamp" if first else "")
+                    first = False
         fig.canvas.mpl_connect('pick_event', get_source_from_click)
         fig.autofmt_xdate()
         plt.xlabel(None)
@@ -196,3 +218,7 @@ class SmoothingFilter:
             borderaxespad=0
         )
         plt.show()
+
+    def plot_iqr(self, title: str, stamping_month: int = 1, uncut_dataset: dict = None, original: bool = True):
+        print(self.dataset.head())
+        print(uncut_dataset.head())

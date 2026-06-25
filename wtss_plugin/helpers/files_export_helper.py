@@ -30,7 +30,7 @@ import seaborn
 from PyQt5.QtWidgets import QMessageBox
 
 from ..helpers.pystac_helper import get_source_from_click
-from ..helpers.smoothing_helper import SmoothingFilter
+from ..helpers.smoothing_helper import SmoothingFilter, aggregation_methods
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 
@@ -311,13 +311,20 @@ class FilesExport:
         except Exception as e:
             self.alert("error", "Error while generate the image!", str(e))
 
-    def generatePlotFig(self, time_series, select_coverage, bands_description, smoothing = None, plot_original: bool = True):
+    def generatePlotFig(
+            self, time_series, select_coverage, bands_description,
+            smoothing = None, plot_original: bool = True,
+            time_stamp: int = 0, aggregation: str = "all"
+        ):
         """Generate an image .JPEG with time series data in a line chart."""
         try:
             self.apply_ts.bands_description = bands_description
             if self.checkResult(time_series):
-                selected_aggregations = ["max", "mean", "min"]
+                aggregations = list(aggregation_methods.values())
+                aggregations.remove("iqr")
+                selected_aggregations = [aggregation] if aggregation in aggregations else aggregations
                 summarize = time_series.summarize()
+                
                 for band_ in time_series.query.attributes:
                     summarize_formatted = self.files_format.format_summarize_ts(summarize, band_)
                     plot_title = ("Coverage {name} Aggregations for {band}").format(
@@ -325,22 +332,33 @@ class FilesExport:
                     )
                     if smoothing:
                         smoothingFilter = SmoothingFilter(summarize_formatted)
+                        print(summarize_formatted)
                         smoothingFilter.select(smoothing)
                         smoothingFilter.apply(selected_aggregations)
-                        for aggregation in selected_aggregations:
-                            smoothingFilter.plot(
+                        if aggregation == "iqr":
+                            uncut_dataset_ = self.files_format.format_time_series_df(time_series, False)
+                            smoothingFilter.plot_iqr(
                                 title=plot_title,
-                                select_band=aggregation,
+                                stamping_month=time_stamp,
+                                uncut_dataset=uncut_dataset_,
                                 original=plot_original
                             )
+                        else:
+                            for aggr in selected_aggregations:
+                                smoothingFilter.plot(
+                                    title=plot_title,
+                                    select_band=aggr,
+                                    stamping_month=time_stamp,
+                                    original=plot_original
+                                )
                     else:
                         fig = plt.figure(figsize = (12, 5))
                         fig.suptitle(plot_title)
                         seaborn.set_theme(style="darkgrid")
-                        for aggregation in selected_aggregations:
+                        for aggr in selected_aggregations:
                             seaborn.lineplot(
                                 data = summarize_formatted,
-                                x = "Index", y = aggregation, label = aggregation,
+                                x = "Index", y = aggr, label = aggr,
                                 markersize = 8, marker = 'o',
                                 linestyle = '-', picker = 10
                             )

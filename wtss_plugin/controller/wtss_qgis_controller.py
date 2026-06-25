@@ -90,6 +90,14 @@ class Controls:
         return "{description}".format(
             description=str(description_dict.get('description')),
         )
+    
+    def get_months(self):
+        return {
+            "January": 1, "February": 2, "March": 3,
+            "April": 4, "May": 5, "June": 6,
+            "July": 7, "August": 8, "September": 9,
+            "October": 10, "November": 11, "December": 12
+        }
 
     def is_typed(self, obj, type):
         """Check if obj belongs to a type."""
