@@ -30,7 +30,8 @@ import seaborn
 from PyQt5.QtWidgets import QMessageBox
 
 from ..helpers.pystac_helper import get_source_from_click
-from ..helpers.smoothing_helper import SmoothingFilter, aggregation_methods
+from ..helpers.smoothing_helper import (SmoothingFilter,
+                                        aggregation_plot_methods)
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 
@@ -320,7 +321,7 @@ class FilesExport:
         try:
             self.apply_ts.bands_description = bands_description
             if self.checkResult(time_series):
-                aggregations = list(aggregation_methods.values())
+                aggregations = list(aggregation_plot_methods.values())
                 aggregations.remove("iqr")
                 selected_aggregations = [aggregation] if aggregation in aggregations else aggregations
                 summarize = time_series.summarize()

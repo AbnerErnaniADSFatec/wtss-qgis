@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>731</width>
-    <height>630</height>
+    <width>732</width>
+    <height>631</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -531,7 +531,7 @@
      </widget>
      <widget class="QWidget" name="sgolay_options_tab">
       <attribute name="title">
-       <string>Savitzky Golay Options</string>
+       <string>Smoothing Options</string>
       </attribute>
       <widget class="QSpinBox" name="sgolay_window_size">
        <property name="geometry">
@@ -606,7 +606,7 @@
      </widget>
      <widget class="QWidget" name="whittaker_options_tab">
       <attribute name="title">
-       <string>Whittaker–Eilers Options</string>
+       <string>Smoothing Options</string>
       </attribute>
       <widget class="QLabel" name="label_whittaker_lambda">
        <property name="geometry">
@@ -655,7 +655,7 @@
      </widget>
      <widget class="QWidget" name="cma_options_tab">
       <attribute name="title">
-       <string>Centered Moving Average Options</string>
+       <string>Smoothing Options</string>
       </attribute>
       <widget class="QSpinBox" name="cma_window">
        <property name="geometry">
@@ -752,7 +752,7 @@
      </widget>
      <widget class="QWidget" name="gam_options_tab">
       <attribute name="title">
-       <string>GAM Options</string>
+       <string>Smoothing Options</string>
       </attribute>
       <widget class="QSpinBox" name="gam_n_splines">
        <property name="geometry">

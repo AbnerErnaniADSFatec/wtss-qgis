@@ -28,6 +28,7 @@ from scipy.sparse.linalg import spsolve
 
 from ..helpers.pystac_helper import get_source_from_click
 
+
 class SGolay:
     """Savitz Golay Smothing."""
 
@@ -137,11 +138,12 @@ options = {
     "Generalized Additive Model (GAM)": Gam
 }
 
-aggregation_methods = {
+aggregation_plot_methods = {
+    "All methods": "all",
+    "Interquartile Median": "iqr",
     "By Mean": "mean", "By Median": "median",
     "By Minimum": "min", "By Maximum": "max",
-    "By Standard Deviation": "std",
-    "By Interquartile Median": "iqr"
+    "By Standard Deviation": "std"
 }
 
 months_names = [

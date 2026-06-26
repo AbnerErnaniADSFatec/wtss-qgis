@@ -51,7 +51,7 @@ from .helpers.files_export_helper import FilesExport
 from .helpers.pystac_helper import stac_args
 # Import the smoothing filters
 from .helpers.smoothing_helper import (Gam, MovingAverage, SGolay, Whittaker,
-                                       options, aggregation_methods)
+                                       aggregation_plot_methods, options)
 # Initialize Qt resources from file resources.py
 from .resources import *
 # Import the code for the dialog
@@ -311,6 +311,7 @@ class WTSSQgis:
         self.dlg.input_longitude.valueChanged.connect(self.checkFilters)
         self.dlg.input_latitude.valueChanged.connect(self.checkFilters)
         self.listCoverages()
+        self.initMainPlotOptions()
         self.initSmoothingOptions()
         self.getAvailableGeometries()
         self.changeGeometryType(0)
@@ -411,21 +412,27 @@ class WTSSQgis:
         self.dlg.blue_input.setEnabled(False)
         self.dlg.blue_input.activated.connect(self.loadRGBOptions)
 
-    def initSmoothingOptions(self):
-        """Load smoothing options."""
-        self.options = { "No Smoothing": None }
-        self.options.update(options)
+    def initMainPlotOptions(self, type_of_input: str = "point"):
+        """Load main plot options with not enabled controls."""
         self.map_months = { "No Time Stamps": 0 }
         self.map_months.update(self.basic_controls.get_months())
-        self.map_aggregations = { "All methods": "all" }
-        self.map_aggregations.update(aggregation_methods)
-        self.selected_smoothing = None
         self.dlg.time_stamp_selection.clear()
         self.dlg.time_stamp_selection.addItems(list(self.map_months.keys()))
         self.dlg.time_stamp_selection.setCurrentIndex(0)
+        self.map_aggregations = { "No aggregation": None }
+        check_geom_input = (type_of_input != "point")
+        if check_geom_input:
+            self.map_aggregations = aggregation_plot_methods
         self.dlg.aggregation_selection.clear()
         self.dlg.aggregation_selection.addItems(list(self.map_aggregations.keys()))
         self.dlg.aggregation_selection.setCurrentIndex(0)
+        self.dlg.aggregation_selection.setEnabled(check_geom_input)
+        
+    def initSmoothingOptions(self):
+        """Load smoothing options."""
+        self.selected_smoothing = None
+        self.options = { "No Smoothing": None }
+        self.options.update(options)
         self.dlg.smoothing_filters_selection.clear()
         self.dlg.smoothing_filters_selection.addItems(list(self.options.keys()))
         self.dlg.smoothing_filters_selection.setCurrentIndex(0)
@@ -619,8 +626,10 @@ class WTSSQgis:
             self.addCanvasControlPoint(True)
             self.dlg.input_longitude.setValue(0)
             self.dlg.input_latitude.setValue(0)
+            self.initMainPlotOptions(type_of_input = "point")
         elif index == 1:
             # 0 => Geometry tab selected
+            self.initMainPlotOptions(type_of_input = "polygon")
             self.getAvailableGeometries()
             if len(list(self.available_geometries.keys())) > 0:
                 self.wkt_string = False
@@ -673,6 +682,7 @@ class WTSSQgis:
         """Check if has a WKT string."""
         try:
             self.selected_geometry = loads(str(self.dlg.selected_wkt.text()))
+            self.initMainPlotOptions(type_of_input = "polygon")
             self.checkFilters()
         except Exception as e:
             self.basic_controls.alert("error", "Error reading WKT string!", str(e))

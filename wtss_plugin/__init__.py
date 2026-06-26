@@ -33,5 +33,6 @@ def classFactory(iface):
     config.set_lib_path()
     # Imports of dependencies again
     from .wtss_qgis import WTSSQgis
+
     # Start plugin GUI
     return WTSSQgis(iface)
