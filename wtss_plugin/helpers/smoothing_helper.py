@@ -29,6 +29,16 @@ from scipy.sparse.linalg import spsolve
 from ..helpers.pystac_helper import get_source_from_click
 
 
+def add_time_stamp_lines(ax, timeline_dates, time_stamp: int):
+    if time_stamp > 0 and time_stamp <= 12:
+        years = sorted(set(dt.year for dt in timeline_dates))
+        first = True
+        for year in years:
+            dates_in_month_year = [dt for dt in timeline_dates if dt.month == time_stamp and dt.year == year]
+            if dates_in_month_year:
+                ax.axvline(x = dates_in_month_year[0], color = 'red', linestyle = ':', label = f"{months_names[time_stamp - 1]} Time Stamp" if first else "")
+                first = False
+
 class SGolay:
     """Savitz Golay Smothing."""
 
@@ -201,15 +211,7 @@ class SmoothingFilter:
                     linestyle = '-', picker = 10,
                     color="grey", alpha=0.5
                 )
-        if stamping_month > 0 and stamping_month <= 12:
-            timeline_dates = sorted(self.dataset["Index"])
-            years = sorted(set(dt.year for dt in timeline_dates))
-            first = True
-            for year in years:
-                dates_in_month_year = [dt for dt in timeline_dates if dt.month == stamping_month and dt.year == year]
-                if dates_in_month_year:
-                    ax.axvline(x = dates_in_month_year[0], color = 'red', linestyle = ':', label = f"{months_names[stamping_month - 1]} Time Stamp" if first else "")
-                    first = False
+        add_time_stamp_lines(ax, self.dataset["Index"], stamping_month)
         fig.canvas.mpl_connect('pick_event', get_source_from_click)
         fig.autofmt_xdate()
         plt.xlabel(None)
