@@ -1,0 +1,113 @@
+cube,band_common_name,band_name,color_description,hexadecimal
+CBERS-4/MUX - Level-4-SR - Data Cube - LCF 2 months,BAND5,blue,Azul,#1976D2
+CBERS-4/MUX - Level-4-SR - Data Cube - LCF 2 months,BAND6,green,Verde,#2E7D32
+CBERS-4/MUX - Level-4-SR - Data Cube - LCF 2 months,BAND7,red,Vermelho,#D32F2F
+CBERS-4/MUX - Level-4-SR - Data Cube - LCF 2 months,BAND7,nir,Roxo,#7B1FA2
+CBERS-4/MUX - Level-4-SR - Data Cube - LCF 2 months,CLEAROB,ClearOb,Cinza claro,#BDBDBD
+CBERS-4/MUX - Level-4-SR - Data Cube - LCF 2 months,CMASK,quality,Preto,#212121
+CBERS-4/MUX - Level-4-SR - Data Cube - LCF 2 months,EVI,evi,Verde limão,#7CB342
+CBERS-4/MUX - Level-4-SR - Data Cube - LCF 2 months,NDVI,ndvi,Verde escuro,#1B5E20
+CBERS-4/MUX - Level-4-SR - Data Cube - LCF 2 months,PROVENANCE,Provenance,Cinza azulado,#607D8B
+CBERS-4/MUX - Level-4-SR - Data Cube - LCF 2 months,TOTALOB,TotalOb,Cinza médio,#757575
+CBERS-4/WFI - Level-4-SR - Data Cube - LCF 16 days,BAND13,blue,Azul,#1976D2
+CBERS-4/WFI - Level-4-SR - Data Cube - LCF 16 days,BAND14,green,Verde,#2E7D32
+CBERS-4/WFI - Level-4-SR - Data Cube - LCF 16 days,BAND15,red,Vermelho,#D32F2F
+CBERS-4/WFI - Level-4-SR - Data Cube - LCF 16 days,BAND16,nir,Roxo,#7B1FA2
+CBERS-4/WFI - Level-4-SR - Data Cube - LCF 16 days,CLEAROB,ClearOb,Cinza claro,#BDBDBD
+CBERS-4/WFI - Level-4-SR - Data Cube - LCF 16 days,CMASK,quality,Preto,#212121
+CBERS-4/WFI - Level-4-SR - Data Cube - LCF 16 days,EVI,evi,Verde limão,#7CB342
+CBERS-4/WFI - Level-4-SR - Data Cube - LCF 16 days,NDVI,ndvi,Verde escuro,#1B5E20
+CBERS-4/WFI - Level-4-SR - Data Cube - LCF 16 days,PROVENANCE,Provenance,Cinza azulado,#607D8B
+CBERS-4/WFI - Level-4-SR - Data Cube - LCF 16 days,TOTALOB,TotalOb,Cinza médio,#757575
+CBERS/WFI - Level-4-SR - Data Cube - LCF 8 days,BAND13,blue,Azul,#1976D2
+CBERS/WFI - Level-4-SR - Data Cube - LCF 8 days,BAND14,green,Verde,#2E7D32
+CBERS/WFI - Level-4-SR - Data Cube - LCF 8 days,BAND15,red,Vermelho,#D32F2F
+CBERS/WFI - Level-4-SR - Data Cube - LCF 8 days,BAND16,nir,Roxo,#7B1FA2
+CBERS/WFI - Level-4-SR - Data Cube - LCF 8 days,CLEAROB,ClearOb,Cinza claro,#BDBDBD
+CBERS/WFI - Level-4-SR - Data Cube - LCF 8 days,CMASK,quality,Preto,#212121
+CBERS/WFI - Level-4-SR - Data Cube - LCF 8 days,DATASOURCE,datasource,,
+CBERS/WFI - Level-4-SR - Data Cube - LCF 8 days,EVI,evi,Verde limão,#7CB342
+CBERS/WFI - Level-4-SR - Data Cube - LCF 8 days,NDVI,ndvi,Verde escuro,#1B5E20
+CBERS/WFI - Level-4-SR - Data Cube - LCF 8 days,PROVENANCE,Provenance,Cinza azulado,#607D8B
+CBERS/WFI - Level-4-SR - Data Cube - LCF 8 days,TOTALOB,TotalOb,Cinza médio,#757575
+Landsat Collection 2 - Level-2 - Data Cube - LCF 16 days,CLEAROB,ClearOb,Cinza claro,#BDBDBD
+Landsat Collection 2 - Level-2 - Data Cube - LCF 16 days,DATASOURCE,datasource,,
+Landsat Collection 2 - Level-2 - Data Cube - LCF 16 days,EVI,evi,Verde limão,#7CB342
+Landsat Collection 2 - Level-2 - Data Cube - LCF 16 days,NDVI,ndvi,Verde escuro,#1B5E20
+Landsat Collection 2 - Level-2 - Data Cube - LCF 16 days,PROVENANCE,Provenance,Cinza azulado,#607D8B
+Landsat Collection 2 - Level-2 - Data Cube - LCF 16 days,TOTALOB,TotalOb,Cinza médio,#757575
+Landsat Collection 2 - Level-2 - Data Cube - LCF 16 days,blue,blue,Azul,#1976D2
+Landsat Collection 2 - Level-2 - Data Cube - LCF 16 days,coastal,coastal,Azul claro,#4FC3F7
+Landsat Collection 2 - Level-2 - Data Cube - LCF 16 days,green,green,Verde,#2E7D32
+Landsat Collection 2 - Level-2 - Data Cube - LCF 16 days,nir08,nir08,Roxo claro,#8E24AA
+Landsat Collection 2 - Level-2 - Data Cube - LCF 16 days,qa_pixel,quality,Preto,#212121
+Landsat Collection 2 - Level-2 - Data Cube - LCF 16 days,red,red,Vermelho,#D32F2F
+Landsat Collection 2 - Level-2 - Data Cube - LCF 16 days,swir16,swir16,Marrom,#6D4C41
+Landsat Collection 2 - Level-2 - Data Cube - LCF 16 days,swir22,swir22,Marrom escuro,#4E342E
+MOD11A2 v061 - Cloud Optimized GeoTIFF,Clear_sky_days,,,
+MOD11A2 v061 - Cloud Optimized GeoTIFF,Clear_sky_nights,,,
+MOD11A2 v061 - Cloud Optimized GeoTIFF,Day_view_angl,,,
+MOD11A2 v061 - Cloud Optimized GeoTIFF,Day_view_time,,,
+MOD11A2 v061 - Cloud Optimized GeoTIFF,Emis_31,,,
+MOD11A2 v061 - Cloud Optimized GeoTIFF,Emis_32,,,
+MOD11A2 v061 - Cloud Optimized GeoTIFF,LST_Day_1km,,,
+MOD11A2 v061 - Cloud Optimized GeoTIFF,LST_Night_1km,,,
+MOD11A2 v061 - Cloud Optimized GeoTIFF,Night_view_angl,,,
+MOD11A2 v061 - Cloud Optimized GeoTIFF,Night_view_time,,,
+MOD11A2 v061 - Cloud Optimized GeoTIFF,QC_Day,,,
+MOD11A2 v061 - Cloud Optimized GeoTIFF,QC_Night,,,
+MOD13Q1 v061 - Cloud Optimized GeoTIFF,EVI,EVI,Verde limão,#7CB342
+MOD13Q1 v061 - Cloud Optimized GeoTIFF,MIR_reflectance,swir 22,Marrom escuro,#4E342E
+MOD13Q1 v061 - Cloud Optimized GeoTIFF,NDVI,NDVI,Verde escuro,#1B5E20
+MOD13Q1 v061 - Cloud Optimized GeoTIFF,NIR_reflectance,nir,Roxo,#7B1FA2
+MOD13Q1 v061 - Cloud Optimized GeoTIFF,VI_Quality,quality,,
+MOD13Q1 v061 - Cloud Optimized GeoTIFF,blue_reflectance,blue,Azul,#1976D2
+MOD13Q1 v061 - Cloud Optimized GeoTIFF,composite_day_of_the_year,quality,,
+MOD13Q1 v061 - Cloud Optimized GeoTIFF,pixel_reliability,quality,,
+MOD13Q1 v061 - Cloud Optimized GeoTIFF,red_reflectance,red,Vermelho,#D32F2F
+MOD13Q1 v061 - Cloud Optimized GeoTIFF,relative_azimuth_angle,,,
+MOD13Q1 v061 - Cloud Optimized GeoTIFF,sun_zenith_angle,,,
+MOD13Q1 v061 - Cloud Optimized GeoTIFF,view_zenith_angle,,,
+MYD11A2 v061 - Cloud Optimized GeoTIFF,Clear_sky_days,,,
+MYD11A2 v061 - Cloud Optimized GeoTIFF,Clear_sky_nights,,,
+MYD11A2 v061 - Cloud Optimized GeoTIFF,Day_view_angl,,,
+MYD11A2 v061 - Cloud Optimized GeoTIFF,Day_view_time,,,
+MYD11A2 v061 - Cloud Optimized GeoTIFF,Emis_31,,,
+MYD11A2 v061 - Cloud Optimized GeoTIFF,Emis_32,,,
+MYD11A2 v061 - Cloud Optimized GeoTIFF,LST_Day_1km,,,
+MYD11A2 v061 - Cloud Optimized GeoTIFF,LST_Night_1km,,,
+MYD11A2 v061 - Cloud Optimized GeoTIFF,Night_view_angl,,,
+MYD11A2 v061 - Cloud Optimized GeoTIFF,Night_view_time,,,
+MYD11A2 v061 - Cloud Optimized GeoTIFF,QC_Day,,,
+MYD11A2 v061 - Cloud Optimized GeoTIFF,QC_Night,,,
+MYD13Q1 v061 - Cloud Optimized GeoTIFF,EVI,EVI,Verde limão,#7CB342
+MYD13Q1 v061 - Cloud Optimized GeoTIFF,MIR_reflectance,swir 22,Marrom escuro,#4E342E
+MYD13Q1 v061 - Cloud Optimized GeoTIFF,NDVI,NDVI,Verde escuro,#1B5E20
+MYD13Q1 v061 - Cloud Optimized GeoTIFF,NIR_reflectance,nir,Roxo,#7B1FA2
+MYD13Q1 v061 - Cloud Optimized GeoTIFF,VI_Quality,quality,,
+MYD13Q1 v061 - Cloud Optimized GeoTIFF,blue_reflectance,blue,Azul,#1976D2
+MYD13Q1 v061 - Cloud Optimized GeoTIFF,composite_day_of_the_year,quality,,
+MYD13Q1 v061 - Cloud Optimized GeoTIFF,pixel_reliability,quality,,
+MYD13Q1 v061 - Cloud Optimized GeoTIFF,red_reflectance,red,Vermelho,#D32F2F
+MYD13Q1 v061 - Cloud Optimized GeoTIFF,relative_azimuth_angle,,,
+MYD13Q1 v061 - Cloud Optimized GeoTIFF,sun_zenith_angle,,,
+MYD13Q1 v061 - Cloud Optimized GeoTIFF,view_zenith_angle,,,
+Sentinel-2/MSI - Level-2A - Data Cube - LCF 16 days,B01,coastal,Azul claro,#4FC3F7
+Sentinel-2/MSI - Level-2A - Data Cube - LCF 16 days,B02,blue,Azul,#1976D2
+Sentinel-2/MSI - Level-2A - Data Cube - LCF 16 days,B03,green,Verde,#2E7D32
+Sentinel-2/MSI - Level-2A - Data Cube - LCF 16 days,B04,red,Vermelho,#D32F2F
+Sentinel-2/MSI - Level-2A - Data Cube - LCF 16 days,B05,rededge,Laranja avermelhado,#E64A19
+Sentinel-2/MSI - Level-2A - Data Cube - LCF 16 days,B06,rededge,Laranja,#F57C00
+Sentinel-2/MSI - Level-2A - Data Cube - LCF 16 days,B07,rededge,Âmbar,#FFA000
+Sentinel-2/MSI - Level-2A - Data Cube - LCF 16 days,B08,nir,Roxo,#7B1FA2
+Sentinel-2/MSI - Level-2A - Data Cube - LCF 16 days,B8A,nir08,Roxo claro,#8E24AA
+Sentinel-2/MSI - Level-2A - Data Cube - LCF 16 days,B09,nir09,Lilás,#AB47BC
+Sentinel-2/MSI - Level-2A - Data Cube - LCF 16 days,B11,swir16,Marrom,#6D4C41
+Sentinel-2/MSI - Level-2A - Data Cube - LCF 16 days,B12,swir22,Marrom escuro,#4E342E
+Sentinel-2/MSI - Level-2A - Data Cube - LCF 16 days,CLEAROB,ClearOb,Cinza claro,#BDBDBD
+Sentinel-2/MSI - Level-2A - Data Cube - LCF 16 days,SCL,quality,Preto,#212121
+Sentinel-2/MSI - Level-2A - Data Cube - LCF 16 days,EVI,evi,Verde limão,#7CB342
+Sentinel-2/MSI - Level-2A - Data Cube - LCF 16 days,NDVI,ndvi,Verde escuro,#1B5E20
+Sentinel-2/MSI - Level-2A - Data Cube - LCF 16 days,PROVENANCE,Provenance,Cinza azulado,#607D8B
+Sentinel-2/MSI - Level-2A - Data Cube - LCF 16 days,TOTALOB,TotalOb,Cinza médio,#757575
+Sentinel-2/MSI - Level-2A - Data Cube - LCF 16 days,NBR,nbr,Vermelho escuro,#8E0000

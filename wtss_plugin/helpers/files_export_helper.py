@@ -24,16 +24,15 @@ import warnings
 from datetime import datetime
 from pathlib import Path
 
-import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn
 from PyQt5.QtWidgets import QMessageBox
 
 from ..helpers.pystac_helper import get_source_from_click
-from ..helpers.smoothing_helper import (SmoothingFilter,
-                                        aggregation_plot_methods,
-                                        add_time_stamp_lines)
+from ..helpers.smoothing_helper import (SmoothingFilter, add_time_stamp_lines,
+                                        aggregation_plot_methods)
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 
@@ -381,104 +380,97 @@ class FilesExport:
             time_stamp: int = 0, aggregation: str = "all"
         ):
         """Generate an image .JPEG with time series data in a line chart."""
-        # try:
-        self.apply_ts.bands_description = bands_description
-        if self.checkResult(time_series):
-            aggregations = list(aggregation_plot_methods.values())
-            aggregations.remove("iqr")
-            aggregations.remove("all")
-            selected_aggregations = [aggregation] if aggregation in aggregations else aggregations
-            summarize = time_series.summarize()
-            for band_ in time_series.query.attributes:
-                summarize_formatted = self.files_format.format_summarize_ts(summarize, band_)
-                plot_title = ("Coverage {name} Aggregations for {band}").format(
-                    name=select_coverage, band=band_
-                )
+        try:
+            self.apply_ts.bands_description = bands_description
+            if self.checkResult(time_series):
+                aggregations = list(aggregation_plot_methods.values())
+                aggregations.remove("iqr")
+                aggregations.remove("all")
+                selected_aggregations = [aggregation] if aggregation in aggregations else aggregations
+                summarize = time_series.summarize()
+                for band_ in time_series.query.attributes:
+                    summarize_formatted = self.files_format.format_summarize_ts(summarize, band_)
+                    plot_title = ("Coverage {name} Aggregations for {band}").format(
+                        name=select_coverage, band=band_
+                    )
+                    if smoothing:
+                        smoothingFilter = SmoothingFilter(summarize_formatted)
+                        smoothingFilter.select(smoothing)
+                        if aggregation!= "iqr":
+                            smoothingFilter.apply(selected_aggregations)
+                            for aggr in selected_aggregations:
+                                smoothingFilter.plot(
+                                    title=plot_title,
+                                    select_band=aggr,
+                                    stamping_month=time_stamp,
+                                    original=plot_original
+                                )
+                    else:
+                        if aggregation == "iqr":
+                            time_series_df = self.files_format.format_time_series_df(time_series, False)
+                            self.generatePlotFigPatterns(time_series_df, band_, time_stamp)
+                        else:
+                            fig, ax = plt.subplots(figsize = (12, 5))
+                            fig.suptitle(plot_title)
+                            seaborn.set_theme(style="darkgrid")
+                            for aggr in selected_aggregations:
+                                seaborn.lineplot(
+                                    data = summarize_formatted,
+                                    x = "Index", y = aggr, label = aggr,
+                                    markersize = 8, marker = 'o',
+                                    linestyle = '-', picker = 10,
+                                    color = bands_description[band_].get('color')
+                                )
+                            add_time_stamp_lines(ax, summarize_formatted["Index"], time_stamp)
+                            fig.canvas.mpl_connect('pick_event', get_source_from_click)
+                            fig.autofmt_xdate()
+                            plt.xlabel(None)
+                            plt.ylabel(None)
+                            plt.legend(
+                                bbox_to_anchor=(1.01, 1),
+                                loc='upper left',
+                                borderaxespad=0
+                            )
+                            plt.show()
+            else:
+                time_series_df = self.files_format.format_time_series_df(time_series)
+                time_series_df = self.files_format.get_values_time_series_df(time_series_df)
+                time_series_df = self.apply_ts.interpolate_df(time_series_df)
+                bands_to_plot = self.apply_ts.get_bands_from_df(time_series_df)
                 if smoothing:
-                    smoothingFilter = SmoothingFilter(summarize_formatted)
+                    smoothingFilter = SmoothingFilter(time_series_df)
                     smoothingFilter.select(smoothing)
-                    print(aggregation)
-                    if aggregation == "iqr":
-                        uncut_dataset_ = self.files_format.format_time_series_df(time_series, False)
-                        smoothingFilter.plot_iqr(
-                            title=plot_title,
+                    smoothingFilter.apply(bands_to_plot)
+                    for band in bands_to_plot:
+                        smoothingFilter.plot(
+                            title=("Time Series for {name}\n{smooth}") \
+                                .format(name = select_coverage, smooth = smoothing.title),
+                            select_band=bands_description,
                             stamping_month=time_stamp,
-                            uncut_dataset=uncut_dataset_,
                             original=plot_original
                         )
-                    else:
-                        smoothingFilter.apply(selected_aggregations)
-                        for aggr in selected_aggregations:
-                            smoothingFilter.plot(
-                                title=plot_title,
-                                select_band=aggr,
-                                stamping_month=time_stamp,
-                                original=plot_original
-                            )
                 else:
-                    if aggregation == "iqr":
-                        time_series_df = self.files_format.format_time_series_df(time_series, False)
-                        print(time_series_df.head())
-                        self.generatePlotFigPatterns(time_series_df, band_, time_stamp)
-                    else:
-                        fig, ax = plt.subplots(figsize = (12, 5))
-                        fig.suptitle(plot_title)
-                        seaborn.set_theme(style="darkgrid")
-                        for aggr in selected_aggregations:
-                            seaborn.lineplot(
-                                data = summarize_formatted,
-                                x = "Index", y = aggr, label = aggr,
-                                markersize = 8, marker = 'o',
-                                linestyle = '-', picker = 10
-                            )
-                        add_time_stamp_lines(ax, summarize_formatted["Index"], time_stamp)
-                        fig.canvas.mpl_connect('pick_event', get_source_from_click)
-                        fig.autofmt_xdate()
-                        plt.xlabel(None)
-                        plt.ylabel(None)
-                        plt.legend(
-                            bbox_to_anchor=(1.01, 1),
-                            loc='upper left',
-                            borderaxespad=0
+                    fig, ax = plt.subplots(figsize = (12, 5))
+                    fig.suptitle(("Time Series for {name}").format(name = select_coverage))
+                    seaborn.set_theme(style="darkgrid")
+                    for band in self.apply_ts.get_bands_from_df(time_series_df):
+                        seaborn.lineplot(
+                            data = time_series_df,
+                            x = "Index", y = band, label = band,
+                            markersize = 8, marker = 'o',
+                            linestyle = '-', picker = 10,
+                            color = bands_description[band].get('color')
                         )
-                        plt.show()
-        else:
-            time_series_df = self.files_format.format_time_series_df(time_series)
-            time_series_df = self.files_format.get_values_time_series_df(time_series_df)
-            time_series_df = self.apply_ts.interpolate_df(time_series_df)
-            bands_to_plot = self.apply_ts.get_bands_from_df(time_series_df)
-            if smoothing:
-                smoothingFilter = SmoothingFilter(time_series_df)
-                smoothingFilter.select(smoothing)
-                smoothingFilter.apply(bands_to_plot)
-                for band in bands_to_plot:
-                    smoothingFilter.plot(
-                        title=("Time Series for {name}\n{smooth}") \
-                            .format(name = select_coverage, smooth = smoothing.title),
-                        select_band=band,
-                        original=plot_original
+                    add_time_stamp_lines(ax, time_series_df["Index"], time_stamp)
+                    fig.canvas.mpl_connect('pick_event', get_source_from_click)
+                    fig.autofmt_xdate()
+                    plt.xlabel(None)
+                    plt.ylabel(None)
+                    plt.legend(
+                        bbox_to_anchor=(1.01, 1),
+                        loc='upper left',
+                        borderaxespad=0
                     )
-            else:
-                fig, ax = plt.subplots(figsize = (12, 5))
-                fig.suptitle(("Time Series for {name}").format(name = select_coverage))
-                seaborn.set_theme(style="darkgrid")
-                for band in self.apply_ts.get_bands_from_df(time_series_df):
-                    seaborn.lineplot(
-                        data = time_series_df,
-                        x = "Index", y = band, label = band,
-                        markersize = 8, marker = 'o',
-                        linestyle = '-', picker = 10
-                    )
-                add_time_stamp_lines(ax, time_series_df["Index"], time_stamp)
-                fig.canvas.mpl_connect('pick_event', get_source_from_click)
-                fig.autofmt_xdate()
-                plt.xlabel(None)
-                plt.ylabel(None)
-                plt.legend(
-                    bbox_to_anchor=(1.01, 1),
-                    loc='upper left',
-                    borderaxespad=0
-                )
-                plt.show()
-        # except Exception as e:
-        #     self.alert("error", "Error while generate the image!", str(e))
+                    plt.show()
+        except Exception as e:
+            self.alert("error", "Error while generate the image!", str(e))

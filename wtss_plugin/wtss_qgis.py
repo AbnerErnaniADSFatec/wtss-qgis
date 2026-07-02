@@ -427,6 +427,16 @@ class WTSSQgis:
         self.dlg.aggregation_selection.addItems(list(self.map_aggregations.keys()))
         self.dlg.aggregation_selection.setCurrentIndex(0)
         self.dlg.aggregation_selection.setEnabled(check_geom_input)
+        self.dlg.aggregation_selection.activated.connect(self.checkAggregationOptions)
+
+    def checkAggregationOptions(self):
+        """Check if the aggregation options are enabled."""
+        aggregation = self.map_aggregations[str(self.dlg.aggregation_selection.currentText())]
+        if aggregation in ["all", "iqr"]:
+            self.blockSmoothingOptions()
+        else:
+            self.blockSmoothingOptions(False)
+            self.selectSmoothingFilter()
         
     def initSmoothingOptions(self):
         """Load smoothing options."""
@@ -438,6 +448,12 @@ class WTSSQgis:
         self.dlg.smoothing_filters_selection.setCurrentIndex(0)
         self.dlg.smoothing_filters_selection.activated.connect(self.selectSmoothingFilter)
         self.selectSmoothingFilter()
+
+    def blockSmoothingOptions(self, block: bool = True):
+        """Block the smoothing options tab."""
+        self.changeSmoothingFilterTab(1)
+        self.dlg.smoothing_filters_selection.setEnabled(not block)
+        self.dlg.smoothing_options_tab.setTabEnabled(1, not block)
 
     def selectSmoothingFilter(self):
         """Select smoothing filters."""
@@ -585,6 +601,7 @@ class WTSSQgis:
         for band_name in list(self.bands_checks.keys()):
             if self.bands_checks and self.bands_checks.get(band_name).get('check').isChecked():
                 selected_attributes[band_name] = self.bands_checks.get(band_name)
+                selected_attributes[band_name].update({'color': self.wtss_controls.getBandColor(self.getSelectedCoverage(), band_name)})
         return selected_attributes
 
     def loadAtributtes(self):

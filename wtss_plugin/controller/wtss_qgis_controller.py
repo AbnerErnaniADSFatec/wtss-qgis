@@ -19,7 +19,10 @@
 """Python QGIS Plugin for WTSS."""
 
 import json
+import random
+from pathlib import Path
 
+import pandas as pd
 import requests
 import shapely
 from PyQt5.QtCore import QDate
@@ -117,6 +120,10 @@ class WTSS_Controls:
         """Build controls for WTSS Servers."""
         self.wtss_host = Config.WTSS_HOST
         self.wtss = WTSS(self.wtss_host)
+        self.list_cubes = None
+        self.cube_titles = None
+        self.cube_bands_color = pd.read_csv(str(Path(Config.BASE_DIR) / 'assets' / 'dict-cube-color-bands.csv'))
+        self.updateProducts()
 
     def getService(self):
         """Get the service data finding by name."""
@@ -139,6 +146,23 @@ class WTSS_Controls:
             except requests.exceptions.HTTPError:
                 continue
         return coverages_dict
+
+    def updateProducts(self):
+        """Update the list of available products."""
+        self.list_cubes = self.listProducts()
+        self.cubes_titles = dict(zip(self.list_cubes.values(), self.list_cubes.keys()))
+    
+    def getBandColor(self, cube_id, band):
+        try:
+            selected_cube_bands_color = self.cube_bands_color[self.cube_bands_color['cube'] == self.cubes_titles[cube_id]]
+            selected_cube_bands_color = selected_cube_bands_color[selected_cube_bands_color['band_common_name'] == band]
+            return selected_cube_bands_color['hexadecimal'].item().upper()
+        except:
+            exclude_colors = self.cube_bands_color['hexadecimal'].dropna().to_list()
+            color = f"#{random.randint(0, 0xFFFFFF):06x}"
+            while color in exclude_colors:
+                color = f"#{random.randint(0, 0xFFFFFF):06x}"
+            return color.upper()
 
     def productDescription(self, product):
         """Return a dictionary with product description."""

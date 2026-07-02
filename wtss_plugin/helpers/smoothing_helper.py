@@ -18,6 +18,8 @@
 
 """Python QGIS Plugin for WTSS."""
 
+from turtle import color
+
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn
@@ -156,6 +158,15 @@ aggregation_plot_methods = {
     "By Standard Deviation": "std"
 }
 
+aggregation_plot_colors = {
+    "all": "#7F8C8D",
+    "mean": "#2980B9",
+    "median": "#27AE60",
+    "min": "#C0392B",
+    "max": "#E67E22",
+    "std": "#8E44AD"
+}
+
 months_names = [
     "January", "February", "March",
     "April", "May", "June",
@@ -187,21 +198,30 @@ class SmoothingFilter:
         time_key = "Index"
         all_ = list(self.dataset.keys())
         return all_[(all_.index(time_key) + 1):len(all_)]
+    
+    def getBandDescription(self, description: dict, band_name: str):
+        band_name_ = band_name
+        if self.selected_option.key in band_name:
+            band_name_ = band_name.replace(f'_{self.selected_option.key}', '')
+        return description.get(band_name_, {})
 
-    def plot(self, title: str, select_band: str = None, stamping_month: int = 1, original: bool = True):
+    def plot(self, title: str, select_band: object = None, stamping_month: int = 1, original: bool = True):
         fig, ax = plt.subplots(figsize = (12, 5))
         fig.suptitle(title)
         seaborn.set_theme(style="darkgrid")
         bands_ = self.getBands()
-        if select_band:
-           bands_ = [band for band in bands_ if select_band in band]
+        bands_ = [band for band in bands_ if band.replace(f'_{self.selected_option.key}', '') == select_band]
+        if select_band and isinstance(select_band, str):
+            select_band = {aggregation: {'color': aggregation_plot_colors.get(aggregation)} for aggregation in bands_}
         for band in bands_:
+            band_color = self.getBandDescription(select_band, band).get('color')
             if self.selected_option.key in band:
                 label_ = band.replace(f"_{self.selected_option.key}", f" {self.selected_option.title}")
                 seaborn.lineplot(
                     data = self.dataset,
                     x = "Index", y = band, label = label_,
-                    markersize = 8, linestyle = '-', picker = 10
+                    markersize = 8, linestyle = '-', picker = 10,
+                    color = band_color
                 )
             elif original:
                 seaborn.lineplot(
@@ -209,7 +229,7 @@ class SmoothingFilter:
                     x = "Index", y = band, label = band,
                     markersize = 8, marker = 'o',
                     linestyle = '-', picker = 10,
-                    color="grey", alpha=0.5
+                    color = band_color, alpha=0.3
                 )
         add_time_stamp_lines(ax, self.dataset["Index"], stamping_month)
         fig.canvas.mpl_connect('pick_event', get_source_from_click)
@@ -222,7 +242,3 @@ class SmoothingFilter:
             borderaxespad=0
         )
         plt.show()
-
-    def plot_iqr(self, title: str, stamping_month: int = 1, uncut_dataset: dict = None, original: bool = True):
-        print(self.dataset.head())
-        print(uncut_dataset.head())
