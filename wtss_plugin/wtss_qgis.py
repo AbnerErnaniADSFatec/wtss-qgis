@@ -420,7 +420,8 @@ class WTSSQgis:
         self.dlg.time_stamp_selection.addItems(list(self.map_months.keys()))
         self.dlg.time_stamp_selection.setCurrentIndex(0)
         self.map_aggregations = { "No aggregation": None }
-        check_geom_input = (type_of_input != "point")
+        geoms = ['polygon', 'multipoint']
+        check_geom_input = any([geom in type_of_input.lower() for geom in geoms])
         if check_geom_input:
             self.map_aggregations = aggregation_plot_methods
         self.dlg.aggregation_selection.clear()
@@ -437,7 +438,7 @@ class WTSSQgis:
         else:
             self.blockSmoothingOptions(False)
             self.selectSmoothingFilter()
-        
+
     def initSmoothingOptions(self):
         """Load smoothing options."""
         self.selected_smoothing = None
@@ -693,13 +694,14 @@ class WTSSQgis:
         # Reprojetar para WGS84 (EPSG:4326)
         gdf_4326 = gdf.to_crs(epsg=4326)
         self.selected_geometry = gdf_4326.geometry.iloc[0]
+        self.initMainPlotOptions(type_of_input = str(self.selected_geometry).lower())
         self.checkFilters()
 
     def validateWKT(self):
         """Check if has a WKT string."""
         try:
             self.selected_geometry = loads(str(self.dlg.selected_wkt.text()))
-            self.initMainPlotOptions(type_of_input = "polygon")
+            self.initMainPlotOptions(type_of_input = str(self.selected_geometry).lower())
             self.checkFilters()
         except Exception as e:
             self.basic_controls.alert("error", "Error reading WKT string!", str(e))

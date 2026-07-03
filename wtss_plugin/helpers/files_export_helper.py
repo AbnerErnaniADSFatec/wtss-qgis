@@ -32,7 +32,7 @@ from PyQt5.QtWidgets import QMessageBox
 
 from ..helpers.pystac_helper import get_source_from_click
 from ..helpers.smoothing_helper import (SmoothingFilter, add_time_stamp_lines,
-                                        aggregation_plot_methods)
+                                        aggregation_plot_methods, aggregation_plot_colors)
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 
@@ -362,6 +362,7 @@ class FilesExport:
         # Labels
         add_time_stamp_lines(ax, indexes, time_stamp)
         fig.canvas.mpl_connect('pick_event', get_source_from_click)
+        fig.subplots_adjust(left=0.06)
         ax.set_title(f"{band} Time Series Patterns")
         ax.set_xlabel("Date")
         ax.set_ylabel(band)
@@ -413,17 +414,19 @@ class FilesExport:
                             fig, ax = plt.subplots(figsize = (12, 5))
                             fig.suptitle(plot_title)
                             seaborn.set_theme(style="darkgrid")
+                            aggr_colors = {aggregation: {'color': aggregation_plot_colors.get(aggregation)} for aggregation in aggregation_plot_methods.values()}
                             for aggr in selected_aggregations:
                                 seaborn.lineplot(
                                     data = summarize_formatted,
                                     x = "Index", y = aggr, label = aggr,
                                     markersize = 8, marker = 'o',
                                     linestyle = '-', picker = 10,
-                                    color = bands_description[band_].get('color')
+                                    color = aggr_colors[aggr].get('color')
                                 )
                             add_time_stamp_lines(ax, summarize_formatted["Index"], time_stamp)
                             fig.canvas.mpl_connect('pick_event', get_source_from_click)
                             fig.autofmt_xdate()
+                            fig.subplots_adjust(left=0.06)
                             plt.xlabel(None)
                             plt.ylabel(None)
                             plt.legend(
@@ -464,6 +467,7 @@ class FilesExport:
                     add_time_stamp_lines(ax, time_series_df["Index"], time_stamp)
                     fig.canvas.mpl_connect('pick_event', get_source_from_click)
                     fig.autofmt_xdate()
+                    fig.subplots_adjust(left=0.06)
                     plt.xlabel(None)
                     plt.ylabel(None)
                     plt.legend(

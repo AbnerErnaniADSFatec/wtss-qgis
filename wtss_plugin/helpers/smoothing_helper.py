@@ -198,7 +198,7 @@ class SmoothingFilter:
         time_key = "Index"
         all_ = list(self.dataset.keys())
         return all_[(all_.index(time_key) + 1):len(all_)]
-    
+
     def getBandDescription(self, description: dict, band_name: str):
         band_name_ = band_name
         if self.selected_option.key in band_name:
@@ -210,8 +210,10 @@ class SmoothingFilter:
         fig.suptitle(title)
         seaborn.set_theme(style="darkgrid")
         bands_ = self.getBands()
-        bands_ = [band for band in bands_ if band.replace(f'_{self.selected_option.key}', '') == select_band]
-        if select_band and isinstance(select_band, str):
+        if select_band and isinstance(select_band, dict):
+            bands_ = [band for band in bands_ if select_band[band.replace(f'_{self.selected_option.key}', '')].get('name') in band]
+        elif select_band and isinstance(select_band, str):
+            bands_ = [band for band in bands_ if band.replace(f'_{self.selected_option.key}', '') == select_band]
             select_band = {aggregation: {'color': aggregation_plot_colors.get(aggregation)} for aggregation in bands_}
         for band in bands_:
             band_color = self.getBandDescription(select_band, band).get('color')
@@ -234,6 +236,7 @@ class SmoothingFilter:
         add_time_stamp_lines(ax, self.dataset["Index"], stamping_month)
         fig.canvas.mpl_connect('pick_event', get_source_from_click)
         fig.autofmt_xdate()
+        fig.subplots_adjust(left=0.06)
         plt.xlabel(None)
         plt.ylabel(None)
         plt.legend(

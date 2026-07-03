@@ -59,7 +59,7 @@ setup_requires = [
 
 install_requires = [
     'numpy!=1.24.0,<2,>=1.22',
-    'matplotlib>=3.7',
+    'matplotlib>=3.7,<3.11',
     'seaborn>=0.13.2',
     'setuptools>=75,<82',
     'pandas>=2',
