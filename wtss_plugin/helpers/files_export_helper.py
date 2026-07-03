@@ -32,7 +32,8 @@ from PyQt5.QtWidgets import QMessageBox
 
 from ..helpers.pystac_helper import get_source_from_click
 from ..helpers.smoothing_helper import (SmoothingFilter, add_time_stamp_lines,
-                                        aggregation_plot_methods, aggregation_plot_colors)
+                                        aggregation_plot_colors,
+                                        aggregation_plot_methods)
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 

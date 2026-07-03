@@ -18,8 +18,6 @@
 
 """Python QGIS Plugin for WTSS."""
 
-from turtle import color
-
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn
