@@ -445,14 +445,13 @@ class FilesExport:
                     smoothingFilter = SmoothingFilter(time_series_df)
                     smoothingFilter.select(smoothing)
                     smoothingFilter.apply(bands_to_plot)
-                    for band in bands_to_plot:
-                        smoothingFilter.plot(
-                            title=("Time Series for {name}\n{smooth}") \
-                                .format(name = select_coverage, smooth = smoothing.title),
-                            select_band=bands_description,
-                            stamping_month=time_stamp,
-                            original=plot_original
-                        )
+                    smoothingFilter.plot(
+                        title=("Time Series for {name}\n{smooth}") \
+                            .format(name = select_coverage, smooth = smoothing.title),
+                        select_band=bands_description,
+                        stamping_month=time_stamp,
+                        original=plot_original
+                    )
                 else:
                     fig, ax = plt.subplots(figsize = (12, 5))
                     fig.suptitle(("Time Series for {name}").format(name = select_coverage))

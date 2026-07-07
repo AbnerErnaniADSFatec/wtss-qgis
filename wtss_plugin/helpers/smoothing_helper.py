@@ -210,7 +210,7 @@ class SmoothingFilter:
         bands_ = self.getBands()
         if select_band and isinstance(select_band, dict):
             bands_ = [band for band in bands_ if select_band[band.replace(f'_{self.selected_option.key}', '')].get('name') in band]
-        elif select_band and isinstance(select_band, str):
+        elif select_band and isinstance(select_band, list) and all([isinstance(i, str) for i in select_band]):
             bands_ = [band for band in bands_ if band.replace(f'_{self.selected_option.key}', '') == select_band]
             select_band = {aggregation: {'color': aggregation_plot_colors.get(aggregation)} for aggregation in bands_}
         for band in bands_:
