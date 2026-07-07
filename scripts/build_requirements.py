@@ -22,7 +22,21 @@ from pathlib import Path
 
 dist = distutils.core.run_setup("setup.py")
 
+
+
+python_home = "python3"
+command = f"{python_home} -m pip install "
+
 file = open(Path('wtss_plugin') / 'requirements.txt','w')
+
 for req in dist.install_requires:
+	command += f'"{req}" '
 	file.write(str(req) + "\n")
+
+command += "--force-reinstall --no-cache --break-system-packages"
+
+file.write(f"# {command}" + "\n")
+
 file.close()
+
+print("\n", command, "\n")

@@ -51,6 +51,13 @@ To install plugin using the terminal for Linux users, just open the terminal and
 
 For Windows users you need to start the `OSGeo4W Shell Software <https://www.osgeo.org/projects/osgeo4w/>`_ to run these commands.
 
+Using terminal or `OSGeo4W Shell Software <https://www.osgeo.org/projects/osgeo4w/>`_ run the following command to install all required dependencies:
+
+.. code-block:: python
+
+    python3 -m pip install "numpy!=1.24.0,<2,>=1.22" "matplotlib<3.11,>=3.7" "seaborn>=0.13.2" "setuptools<82,>=75" "pandas>=2" "jsonschema>=3.2" "pystac-client>=0.8.3" "wtss==2.0.0a3" "geopandas==1.1.1" "scipy<=1.17.0" "pygam==0.12.0" --force-reinstall --no-cache --break-system-packages
+
+
 The first step is to extract the files of downloaded zip file in QGIS plugins path, generally in `C:\Users\%USER%\AppData\Roaming\QGIS\QGIS%QGIS_VERSION%\profiles\default\python\plugins` for Windows and ` /home/${USER}/.local/share/QGIS/QGIS3/profiles/default/python/plugins` for Linux.
 
 In this path, something like ``<...> profiles\default\python\plugins\wtss_plugin``, run:
