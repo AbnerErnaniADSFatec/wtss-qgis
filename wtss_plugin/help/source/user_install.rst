@@ -31,22 +31,6 @@ After download the `zip` file, start your QGIS and go to ``Plugins >> Manage and
     :width: 100%
     :alt: Install from zip
 
-
-Follow the installation guide to configure python dependencies, note that you can choose (using the checkbox to enable the use of Python Home) install dependencies directly in ``Python Home`` (not recommended) or localy using the ``Plugin Path``.
-
-.. image:: ./assets/screenshots/install_steps.png
-    :width: 70%
-    :align: center
-    :alt: Installation Steps
-
-
-The users can choose install dependencies ``all in one time`` (Install All) or ``one by one`` (Install By), the last option is recommended when the user has any of plugin dependencies `setup.py <https://github.com/brazil-data-cube/wtss-qgis/blob/8767a8ae6e29ad5c115ac8f8d66b7034f857c6c3/setup.py#L60>`_ already installed in your environment.
-
-This window will run the ``pip install`` command using a subprocess. After this step, this window will request the user to reload the QGIS instance.
-
-Using Terminal or OSGEO Shell
------------------------------
-
 To install plugin using the terminal for Linux users, just open the terminal and check the python version as explained in `FAQ <./faq.html>`_.
 
 For Windows users you need to start the `OSGeo4W Shell Software <https://www.osgeo.org/projects/osgeo4w/>`_ to run these commands.
@@ -58,7 +42,7 @@ Using terminal or `OSGeo4W Shell Software <https://www.osgeo.org/projects/osgeo4
     python3 -m pip install "numpy!=1.24.0,<2,>=1.22" "matplotlib<3.11,>=3.7" "seaborn>=0.13.2" "setuptools<82,>=75" "pandas>=2" "jsonschema>=3.2" "pystac-client>=0.8.3" "wtss==2.0.0a3" "geopandas==1.1.1" "scipy<=1.17.0" "pygam==0.12.0" --force-reinstall --no-cache --break-system-packages
 
 
-The first step is to extract the files of downloaded zip file in QGIS plugins path, generally in `C:\Users\%USER%\AppData\Roaming\QGIS\QGIS%QGIS_VERSION%\profiles\default\python\plugins` for Windows and ` /home/${USER}/.local/share/QGIS/QGIS3/profiles/default/python/plugins` for Linux.
+Another way is to use the `requirements.txt` file The first step is to extract the files of downloaded zip file in QGIS plugins path, generally in `C:\Users\%USER%\AppData\Roaming\QGIS\QGIS%QGIS_VERSION%\profiles\default\python\plugins` for Windows and ` /home/${USER}/.local/share/QGIS/QGIS3/profiles/default/python/plugins` for Linux.
 
 In this path, something like ``<...> profiles\default\python\plugins\wtss_plugin``, run:
 
