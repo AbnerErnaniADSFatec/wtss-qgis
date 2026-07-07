@@ -38,7 +38,7 @@ Using terminal or `OSGeo4W Shell Software <https://www.osgeo.org/projects/osgeo4
 After download the `zip` file, start your QGIS and go to ``Plugins >> Manage and Install Plugins`` and install the plugin via zip by selecting the file and clicking in ``Install Plugin``.
 
 .. image:: ./assets/screenshots/install_zip.png
-    :width: 100%
+    :width: 70%
     :alt: Install from zip
 
 Another way is to use the `requirements.txt` file The first step is to extract the files of downloaded zip file in QGIS plugins path, generally in `C:\Users\%USER%\AppData\Roaming\QGIS\QGIS%QGIS_VERSION%\profiles\default\python\plugins` for Windows and ` /home/${USER}/.local/share/QGIS/QGIS3/profiles/default/python/plugins` for Linux.
@@ -57,5 +57,5 @@ In this path, something like ``<...> profiles\default\python\plugins\wtss_plugin
     After reload the QGIS environment go to ``Plugins >> Manage and Install Plugins`` and enable the ``WTSS``.
 
     .. image:: ./assets/screenshots/enable_plugin.png
-        :width: 100%
+        :width: 70%
         :alt: Enable Plugin
