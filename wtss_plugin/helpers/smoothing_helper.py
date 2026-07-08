@@ -156,15 +156,6 @@ aggregation_plot_methods = {
     "By Standard Deviation": "std"
 }
 
-aggregation_plot_colors = {
-    "all": "#7F8C8D",
-    "mean": "#2980B9",
-    "median": "#27AE60",
-    "min": "#C0392B",
-    "max": "#E67E22",
-    "std": "#8E44AD"
-}
-
 months_names = [
     "January", "February", "March",
     "April", "May", "June",
@@ -203,18 +194,15 @@ class SmoothingFilter:
             band_name_ = band_name.replace(f'_{self.selected_option.key}', '')
         return description.get(band_name_, {})
 
-    def plot(self, title: str, select_band: object = None, stamping_month: int = 1, original: bool = True):
+    def plot(self, title: str, select_bands: dict, stamping_month: int = 1, original: bool = True):
         fig, ax = plt.subplots(figsize = (12, 5))
         fig.suptitle(title)
         seaborn.set_theme(style="darkgrid")
-        bands_ = self.getBands()
-        if select_band and isinstance(select_band, dict):
-            bands_ = [band for band in bands_ if select_band[band.replace(f'_{self.selected_option.key}', '')].get('name') in band]
-        elif select_band and isinstance(select_band, list) and all([isinstance(i, str) for i in select_band]):
-            bands_ = [band for band in bands_ if band.replace(f'_{self.selected_option.key}', '') == select_band]
-            select_band = {aggregation: {'color': aggregation_plot_colors.get(aggregation)} for aggregation in bands_}
+        bands_ = [band for band in self.getBands() \
+                    if any([band.replace(f'_{self.selected_option.key}', '') == selected \
+                        for selected in list(select_bands.keys())])]
         for band in bands_:
-            band_color = self.getBandDescription(select_band, band).get('color')
+            band_color = self.getBandDescription(select_bands, band).get('color')
             if self.selected_option.key in band:
                 label_ = band.replace(f"_{self.selected_option.key}", f" {self.selected_option.title}")
                 seaborn.lineplot(

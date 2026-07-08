@@ -429,6 +429,7 @@ class WTSSQgis:
         self.dlg.aggregation_selection.setCurrentIndex(0)
         self.dlg.aggregation_selection.setEnabled(check_geom_input)
         self.dlg.aggregation_selection.activated.connect(self.checkAggregationOptions)
+        self.checkAggregationOptions()
 
     def checkAggregationOptions(self):
         """Check if the aggregation options are enabled."""
@@ -437,7 +438,6 @@ class WTSSQgis:
             self.blockSmoothingOptions()
         else:
             self.blockSmoothingOptions(False)
-            self.selectSmoothingFilter()
 
     def initSmoothingOptions(self):
         """Load smoothing options."""

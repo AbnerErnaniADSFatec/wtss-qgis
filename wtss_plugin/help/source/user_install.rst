@@ -33,7 +33,8 @@ Using terminal or `OSGeo4W Shell Software <https://www.osgeo.org/projects/osgeo4
 
 .. code-block:: python
 
-    python3 -m pip install "numpy!=1.24.0,<2,>=1.22" "matplotlib<3.11,>=3.7" "seaborn>=0.13.2" "setuptools<82,>=75" "pandas>=2" "jsonschema>=3.2" "pystac-client>=0.8.3" "wtss==2.0.0a3" "geopandas==1.1.1" "scipy<=1.17.0" "pygam==0.12.0" --force-reinstall --no-cache --break-system-packages
+    # python3 -m pip install "numpy!=1.24.0,<2,>=1.22" "matplotlib<3.11,>=3.7" "seaborn>=0.13.2" "setuptools<82,>=75" "pandas>=2" "jsonschema>=3.2" "pystac-client==0.8.3" "wtss==2.0.0a3" "geopandas==1.1.1" "scipy<=1.17.0" "pygam==0.12.0" --force-reinstall --no-cache --break-system-packages
+
 
 After download the `zip` file, start your QGIS and go to ``Plugins >> Manage and Install Plugins`` and install the plugin via zip by selecting the file and clicking in ``Install Plugin``.
 

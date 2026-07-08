@@ -32,7 +32,6 @@ from PyQt5.QtWidgets import QMessageBox
 
 from ..helpers.pystac_helper import get_source_from_click
 from ..helpers.smoothing_helper import (SmoothingFilter, add_time_stamp_lines,
-                                        aggregation_plot_colors,
                                         aggregation_plot_methods)
 
 warnings.filterwarnings("ignore", category=FutureWarning)
@@ -175,16 +174,20 @@ class FilesFormat:
         """Get available aggregations for summarize time series."""
         return list(set(summarize_ts.df()['aggregation']))
 
-    def format_summarize_ts(self, summarize_ts, band):
+    def format_summarize_ts(self, summarize_ts, bands: list):
         """Format summarize data to plot in seaborn."""
-        result = getattr(summarize_ts, band)
+        dataframe = []
         aggregations = self.get_aggregations(summarize_ts)
-        dataframe = {
-            "Index": [datetime.strptime(date_, "%Y-%m-%d") for date_ in summarize_ts.timeline]
-        }
-        for aggregation in aggregations:
-            dataframe[aggregation] = getattr(result, aggregation)
-        return pd.DataFrame(dataframe)
+        for band in bands:
+            result = getattr(summarize_ts, band)
+            dataframe_ = pd.DataFrame({"Index": [
+                datetime.strptime(date_, "%Y-%m-%d")
+                for date_ in summarize_ts.timeline
+            ]})
+            for aggregation in aggregations:
+                dataframe_[f"{band}_{aggregation}"] = getattr(result, aggregation)
+            dataframe.append(dataframe_)
+        return pd.merge(*dataframe, on='Index', how='inner')
 
 
 class FilesExport:
@@ -388,54 +391,58 @@ class FilesExport:
                 aggregations = list(aggregation_plot_methods.values())
                 aggregations.remove("iqr")
                 aggregations.remove("all")
-                selected_aggregations = [aggregation] if aggregation in aggregations else aggregations
-                summarize = time_series.summarize()
-                for band_ in time_series.query.attributes:
-                    summarize_formatted = self.files_format.format_summarize_ts(summarize, band_)
-                    plot_title = ("Coverage {name} Aggregations for {band}").format(
-                        name=select_coverage, band=band_
+                plot_title = (f"Coverage {select_coverage} Aggregations")
+                if aggregation == "iqr":
+                    time_series_df = self.files_format.format_time_series_df(time_series, False)
+                    for band_ in list(time_series.query.attributes):
+                        self.generatePlotFigPatterns(time_series_df, band_, time_stamp)
+                else:
+                    selected_aggregations = [aggregation] if aggregation in aggregations else aggregations
+                    summarize_formatted = self.files_format.format_summarize_ts(
+                        time_series.summarize(),
+                        list(time_series.query.attributes)
                     )
+                    target_bands = {
+                        band: \
+                            bands_description.get(str(band.split("_")[0]), {}) \
+                                for band in \
+                                    [c for c in summarize_formatted.columns.tolist() \
+                                        if any(agg in c for agg in selected_aggregations)]
+                    }
                     if smoothing:
                         smoothingFilter = SmoothingFilter(summarize_formatted)
                         smoothingFilter.select(smoothing)
-                        if aggregation!= "iqr":
-                            smoothingFilter.apply(selected_aggregations)
-                            for aggr in selected_aggregations:
-                                smoothingFilter.plot(
-                                    title=plot_title,
-                                    select_band=aggr,
-                                    stamping_month=time_stamp,
-                                    original=plot_original
-                                )
+                        smoothingFilter.apply(list(target_bands.keys()))
+                        smoothingFilter.plot(
+                            title=plot_title,
+                            select_bands=target_bands,
+                            stamping_month=time_stamp,
+                            original=plot_original
+                        )
                     else:
-                        if aggregation == "iqr":
-                            time_series_df = self.files_format.format_time_series_df(time_series, False)
-                            self.generatePlotFigPatterns(time_series_df, band_, time_stamp)
-                        else:
-                            fig, ax = plt.subplots(figsize = (12, 5))
-                            fig.suptitle(plot_title)
-                            seaborn.set_theme(style="darkgrid")
-                            aggr_colors = {aggregation: {'color': aggregation_plot_colors.get(aggregation)} for aggregation in aggregation_plot_methods.values()}
-                            for aggr in selected_aggregations:
-                                seaborn.lineplot(
-                                    data = summarize_formatted,
-                                    x = "Index", y = aggr, label = aggr,
-                                    markersize = 8, marker = 'o',
-                                    linestyle = '-', picker = 10,
-                                    color = aggr_colors[aggr].get('color')
-                                )
-                            add_time_stamp_lines(ax, summarize_formatted["Index"], time_stamp)
-                            fig.canvas.mpl_connect('pick_event', get_source_from_click)
-                            fig.autofmt_xdate()
-                            fig.subplots_adjust(left=0.06)
-                            plt.xlabel(None)
-                            plt.ylabel(None)
-                            plt.legend(
-                                bbox_to_anchor=(1.01, 1),
-                                loc='upper left',
-                                borderaxespad=0
+                        fig, ax = plt.subplots(figsize = (12, 5))
+                        fig.suptitle(plot_title)
+                        seaborn.set_theme(style="darkgrid")
+                        for band_ in list(target_bands.keys()):
+                            seaborn.lineplot(
+                                data = summarize_formatted,
+                                x = "Index", y = band_, label = band_,
+                                markersize = 8, marker = 'o',
+                                linestyle = '-', picker = 10,
+                                color = target_bands[band_].get('color')
                             )
-                            plt.show()
+                        add_time_stamp_lines(ax, summarize_formatted["Index"], time_stamp)
+                        fig.canvas.mpl_connect('pick_event', get_source_from_click)
+                        fig.autofmt_xdate()
+                        fig.subplots_adjust(left=0.06)
+                        plt.xlabel(None)
+                        plt.ylabel(None)
+                        plt.legend(
+                            bbox_to_anchor=(1.01, 1),
+                            loc='upper left',
+                            borderaxespad=0
+                        )
+                        plt.show()
             else:
                 time_series_df = self.files_format.format_time_series_df(time_series)
                 time_series_df = self.files_format.get_values_time_series_df(time_series_df)
@@ -448,7 +455,7 @@ class FilesExport:
                     smoothingFilter.plot(
                         title=("Time Series for {name}\n{smooth}") \
                             .format(name = select_coverage, smooth = smoothing.title),
-                        select_band=bands_description,
+                        select_bands=bands_description,
                         stamping_month=time_stamp,
                         original=plot_original
                     )
