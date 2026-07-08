@@ -452,7 +452,7 @@ class WTSSQgis:
 
     def blockSmoothingOptions(self, block: bool = True):
         """Block the smoothing options tab."""
-        self.changeSmoothingFilterTab(1)
+        self.initSmoothingOptions()
         self.dlg.smoothing_filters_selection.setEnabled(not block)
         self.dlg.smoothing_options_tab.setTabEnabled(1, not block)
 
