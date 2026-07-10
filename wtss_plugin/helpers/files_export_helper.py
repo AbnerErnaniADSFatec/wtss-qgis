@@ -33,6 +33,7 @@ from PyQt5.QtWidgets import QMessageBox
 from ..helpers.pystac_helper import get_source_from_click
 from ..helpers.smoothing_helper import (SmoothingFilter, add_time_stamp_lines,
                                         aggregation_plot_methods)
+from functools import reduce
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 
@@ -187,7 +188,10 @@ class FilesFormat:
             for aggregation in aggregations:
                 dataframe_[f"{band}_{aggregation}"] = getattr(result, aggregation)
             dataframe.append(dataframe_)
-        return pd.merge(*dataframe, on='Index', how='inner')
+        return reduce(
+            lambda left, right: pd.merge(left, right, on='Index', how='inner'),
+            dataframe
+        )
 
 
 class FilesExport:
